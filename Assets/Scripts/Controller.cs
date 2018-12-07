@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.EventSystems;
 using UnityEngine.SceneManagement;
+using UnityEngine.UI;
 
 [RequireComponent(typeof(Rigidbody))]
 [RequireComponent(typeof(Collider))]
@@ -10,11 +11,9 @@ using UnityEngine.SceneManagement;
 
 public class Controller : MonoBehaviour
 {
-
     public float speed;
     public float JumpForce;
     bool IsJump = true;
-    bool IsDoubleJump = true;
     bool Automove;
     Vector3 move_direction;
     Vector3 click_pos;
@@ -23,6 +22,12 @@ public class Controller : MonoBehaviour
     public float y;
     private Quaternion rotation;
 
+    public bool InventorySwitch;
+    public GameObject inventory;
+    private int allSlots;
+    private int indexSlots;
+    private GameObject[] slot;
+
     void Awake()
     {
         animator = GetComponent<Animator>();
@@ -30,10 +35,22 @@ public class Controller : MonoBehaviour
     // Use this for initialization
     void Start () {
         speed = 5;
-        JumpForce = 300;
+        JumpForce = 200;
         IsJump = false;
         Vector3 force_direction = Vector3.up;
         Automove = false;
+        x = 0;
+        y = 0;
+
+        InventorySwitch = false;
+        inventory.SetActive(false);
+        allSlots = 10;
+        indexSlots = 0;
+        //slot = new GameObject[allSlots];
+        //for (int i = 0; i < allSlots; ++i)
+        //{
+        //    slot[i] = inventory.transform.GetChild(i).gameObject;
+        //}
     }
 	
 	// Update is called once per frame
@@ -41,14 +58,32 @@ public class Controller : MonoBehaviour
         // init
         animator.SetFloat("speed", 0f);
 
-        x += Input.GetAxis("Mouse X") * Time.deltaTime * 400;
-        y -= Input.GetAxis("Mouse Y") * Time.deltaTime * 400;
+        x += Input.GetAxis("Mouse X") * Time.deltaTime * 150;
+        y -= Input.GetAxis("Mouse Y") * Time.deltaTime * 150;
+        if (y <= -120f)
+            y = 120f;
+        else if (y >= 20f)
+            y = 20f;
         rotation = Quaternion.Euler(y, x, 0);
         transform.rotation = rotation;
 
-        if (Input.GetKey(KeyCode.Escape)){
-            SceneManager.LoadScene(0);
+        if (Input.GetKeyDown(KeyCode.E))
+        {
+            if (InventorySwitch == false)
+            {
+                InventorySwitch = true;
+                inventory.SetActive(true);
+            }
+            else
+            {
+                InventorySwitch = false;
+                inventory.SetActive(false);
+            }
+
         }
+            if (Input.GetKey(KeyCode.Escape)){
+                SceneManager.LoadScene(0);
+            }
         if(Automove)
         {
             if(Vector3.Distance(transform.position, click_pos) <= 1)
@@ -65,8 +100,15 @@ public class Controller : MonoBehaviour
             RaycastHit rch;
             if (Physics.Raycast(ray, out rch))
             {
-                if (rch.collider.name == "Cube")
+                if (rch.collider.name == "dirt")
+                {
+                    if (indexSlots >= allSlots)
+                        return;
                     Destroy(rch.collider.gameObject);
+                    inventory.transform.GetChild(indexSlots).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/coarse_dirt");
+                    ++indexSlots;
+                }
+
             }
         }
         if (Input.GetMouseButton(1))
@@ -86,27 +128,28 @@ public class Controller : MonoBehaviour
                     
             }
         }
+
         if (Input.GetKey(KeyCode.W))
         {
-            transform.position += Time.deltaTime * speed * Vector3.forward;
+            transform.position += Time.deltaTime * speed * transform.forward;
             Automove = false;
             animator.SetFloat("speed", speed);
         }
         if (Input.GetKey(KeyCode.S))
         {
-            transform.position += Time.deltaTime * speed * Vector3.back;
+            transform.position += Time.deltaTime * speed * transform.forward * (-1);
             Automove = false;
             animator.SetFloat("speed", speed);
         }
         if (Input.GetKey(KeyCode.A))
         {
-            transform.position += Time.deltaTime * speed * Vector3.left;
+            transform.position += Quaternion.Euler(0, -90, 0) * transform.forward * Time.deltaTime * speed ;
             Automove = false;
             animator.SetFloat("speed", speed);
         }
         if (Input.GetKey(KeyCode.D))
         {
-            transform.position += Time.deltaTime * speed * Vector3.right;
+            transform.position += Quaternion.Euler(0, 90, 0) * transform.forward * Time.deltaTime * speed;
             Automove = false;
             animator.SetFloat("speed", speed);
         }
@@ -119,19 +162,6 @@ public class Controller : MonoBehaviour
                 rb.AddForce(JumpForce * Vector3.up);
                 IsJump = true;
             }
-            //else
-            //{
-            //    if (!IsDoubleJump)
-            //    {
-            //        rb.AddForce(JumpForce * Vector3.up);
-            //        IsDoubleJump = true;
-            //    }
-            //}
-            
-            
-            //transform.position += Time.deltaTime * JumpForce * Vector3.up;
-            
-            
         }
     }
     void OnCollisionEnter(Collision c)
@@ -143,7 +173,7 @@ public class Controller : MonoBehaviour
         if (c.transform.name == "g1" || c.transform.name == "g2" || c.transform.name == "g3")
         {
             Destroy(c.gameObject);
-            speed += 5.0f;
+            speed += 2.0f;
             JumpForce += 50.0f;
             Debug.Log(speed);
         }
