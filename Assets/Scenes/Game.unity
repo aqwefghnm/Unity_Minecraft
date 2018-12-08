@@ -43,7 +43,7 @@ RenderSettings:
 LightmapSettings:
   m_ObjectHideFlags: 0
   serializedVersion: 11
-  m_GIWorkflowMode: 0
+  m_GIWorkflowMode: 1
   m_GISettings:
     serializedVersion: 2
     m_BounceScale: 1
@@ -89,7 +89,8 @@ LightmapSettings:
     m_PVRFilteringAtrousPositionSigmaIndirect: 2
     m_PVRFilteringAtrousPositionSigmaAO: 1
     m_ShowResolutionOverlay: 1
-  m_LightingDataAsset: {fileID: 0}
+  m_LightingDataAsset: {fileID: 112000002, guid: f805b80fc54414e479a400a679e7253d,
+    type: 2}
   m_UseShadowmask: 1
 --- !u!196 &4
 NavMeshSettings:
@@ -1654,7 +1655,7 @@ MonoBehaviour:
   m_GameObject: {fileID: 1308846916}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3977a25ca60839f4789e7494c5fe726b, type: 3}
+  m_Script: {fileID: 11500000, guid: 2d198406dc484d14ba7180c36a6a63bc, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
 --- !u!4 &1308846918
