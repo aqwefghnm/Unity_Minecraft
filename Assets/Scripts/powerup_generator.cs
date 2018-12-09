@@ -12,7 +12,7 @@ public class powerup_generator : MonoBehaviour {
         float x = Random.Range(-3, 3);
         float z = Random.Range(-3, 3);
         powerup.parent = transform;
-        powerup.localPosition = new Vector3(x, 6, z);
+        powerup.localPosition = new Vector3(x, 10, z);
 	}
 	
 	// Update is called once per frame

@@ -25,8 +25,10 @@ public class Controller : MonoBehaviour
     public bool InventorySwitch;
     public GameObject inventory;
     private int allSlots;
-    private int indexSlots;
     private GameObject[] slot;
+    private int[] obj;
+    private int choose;
+    public Transform[] material;
 
     void Awake()
     {
@@ -42,11 +44,11 @@ public class Controller : MonoBehaviour
         x = 0;
         y = 0;
 
-        InventorySwitch = false;
-        inventory.SetActive(false);
+        InventorySwitch = true;
+        inventory.SetActive(true);
         allSlots = 10;
-        indexSlots = 0;
-        //slot = new GameObject[allSlots];
+        obj = new int[allSlots];
+        choose = 7;
         //for (int i = 0; i < allSlots; ++i)
         //{
         //    slot[i] = inventory.transform.GetChild(i).gameObject;
@@ -67,7 +69,7 @@ public class Controller : MonoBehaviour
         rotation = Quaternion.Euler(y, x, 0);
         transform.rotation = rotation;
 
-        if (Input.GetKeyDown(KeyCode.E))
+        if (Input.GetKeyUp(KeyCode.E))
         {
             if (InventorySwitch == false)
             {
@@ -100,15 +102,40 @@ public class Controller : MonoBehaviour
             RaycastHit rch;
             if (Physics.Raycast(ray, out rch))
             {
-                if (rch.collider.name == "dirt")
+                int index;
+                if(choose == 7)
                 {
-                    if (indexSlots >= allSlots)
+                    if (rch.collider.name == "dirt(Clone)")
+                        index = 0;
+                    else if (rch.collider.name == "brick(Clone)")
+                        index = 1;
+                    else if (rch.collider.name == "glass(Clone)")
+                        index = 2;
+                    else if (rch.collider.name == "gold(Clone)")
+                        index = 3;
+                    else if (rch.collider.name == "log(Clone)")
+                        index = 4;
+                    else if (rch.collider.name == "grass(Clone)")
+                        index = 5;
+                    else if (rch.collider.name == "stone(Clone)")
+                        index = 6;
+                    else
                         return;
+                    ++obj[index];
                     Destroy(rch.collider.gameObject);
-                    inventory.transform.GetChild(indexSlots).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/coarse_dirt");
-                    ++indexSlots;
-                }
+                    inventory.transform.GetChild(index).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text = obj[index].ToString();
 
+                }
+                else
+                {
+                    Transform powerup = Instantiate(material[choose]);
+                    powerup.position = rch.point + new Vector3(0, 2, 0);
+                    --obj[choose];
+                    inventory.transform.GetChild(choose).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text = obj[choose].ToString();
+                    inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/white");
+                    choose = 7;
+                    inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/red");
+                }
             }
         }
         if (Input.GetMouseButton(1))
@@ -119,13 +146,12 @@ public class Controller : MonoBehaviour
             {
                 if (rch.collider.name == "floor" && !Automove)
                 {
-                    Debug.Log(rch.point);
+                    //Debug.Log(rch.point);
                     Automove = true;
                     move_direction = rch.point - transform.position;
                     Debug.Log(move_direction);
                     click_pos = rch.point;
-                }
-                    
+                }     
             }
         }
 
@@ -163,6 +189,76 @@ public class Controller : MonoBehaviour
                 IsJump = true;
             }
         }
+        if (Input.GetKey(KeyCode.Alpha1))
+        {
+            int num = int.Parse(inventory.transform.GetChild(0).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text);
+            if (num <= 0)
+                return;
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/white");
+            choose = 0;
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/red");
+        }
+        if (Input.GetKey(KeyCode.Alpha2))
+        {
+            int num = int.Parse(inventory.transform.GetChild(1).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text);
+            if (num <= 0)
+                return;
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/white");
+            choose = 1;
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/red");
+        }
+        if (Input.GetKey(KeyCode.Alpha3))
+        {
+            int num = int.Parse(inventory.transform.GetChild(2).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text);
+            if (num <= 0)
+                return;
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/white");
+            choose = 2;
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/red");
+        }
+        if (Input.GetKey(KeyCode.Alpha4))
+        {
+            int num = int.Parse(inventory.transform.GetChild(3).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text);
+            if (num <= 0)
+                return;
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/white");
+            choose = 3;
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/red");
+        }
+        if (Input.GetKey(KeyCode.Alpha5))
+        {
+            int num = int.Parse(inventory.transform.GetChild(4).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text);
+            if (num <= 0)
+                return;
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/white");
+            choose = 4;
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/red");
+        }
+        if (Input.GetKey(KeyCode.Alpha6))
+        {
+            int num = int.Parse(inventory.transform.GetChild(5).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text);
+            if (num <= 0)
+                return;
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/white");
+            choose = 5;
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/red");
+        }
+        if (Input.GetKey(KeyCode.Alpha7))
+        {
+            int num = int.Parse(inventory.transform.GetChild(6).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text);
+            if (num <= 0)
+                return;
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/white");
+            choose = 6;
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/red");
+        }
+        if (Input.GetKey(KeyCode.Alpha8))
+        {
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/white");
+            choose = 7;
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/red");
+        }
+
     }
     void OnCollisionEnter(Collision c)
     {
