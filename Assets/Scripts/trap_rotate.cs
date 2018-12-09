@@ -29,7 +29,7 @@ public class trap_rotate : MonoBehaviour {
         {
             Rigidbody rb = c.GetComponent<Rigidbody>();
             //c.transform.position = new Vector3(c.transform.position.x, 10.0f, c.transform.position.z);
-            rb.AddForce(800 * Vector3.up);
+            rb.AddForce(400 * Vector3.up);
         }
        
     }
