@@ -81,9 +81,10 @@ public class Controller : MonoBehaviour
             }
 
         }
-            if (Input.GetKey(KeyCode.Escape)){
-                SceneManager.LoadScene(0);
-            }
+        if (Input.GetKey(KeyCode.Escape))
+        {
+            SceneManager.LoadScene(0);
+        }
         if(Automove)
         {
             if(Vector3.Distance(transform.position, click_pos) <= 1)
