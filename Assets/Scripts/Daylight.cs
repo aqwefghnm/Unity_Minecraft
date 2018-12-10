@@ -14,7 +14,7 @@ public class Daylight : MonoBehaviour {
     void Update()
     {
         
-        Debug.Log(wolf);
+        //Debug.Log(wolf);
         //x = transform.rotation.x;
         x = transform.eulerAngles.x;
         //y = transform.rotation.y;

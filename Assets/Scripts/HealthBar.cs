@@ -8,12 +8,20 @@ public class HealthBar : MonoBehaviour {
     public int currentHealth = maxHealth;
     //血量條
     public RectTransform Health_Bar, Hurt;
+    static public bool IsAttacked;
 
     private int temp;
     private AudioSource bgm;
+    private float timeacuum;
+    public float interval;
+    private bool IsHurt;
     void Start()
     {
+        interval = 1.0f;
+        timeacuum = 0;
         temp = maxHealth;
+        IsHurt = true;
+        IsAttacked = false;
         bgm = GameObject.Find("DeductHP").GetComponent<AudioSource>();
         bgm.Stop();
         //bgm.Play();
@@ -32,17 +40,37 @@ public class HealthBar : MonoBehaviour {
         {
             return;
         }
+
+        timeacuum += Time.deltaTime;
+        if(timeacuum >= interval)
+        {
+            IsHurt = true;
+        }
         //按下H鈕扣血
-        if (Input.GetKeyDown(KeyCode.H))
+        if (Input.GetKeyDown(KeyCode.H) && IsHurt)
         {
             //接受傷害
             currentHealth = currentHealth - 30;
+            IsHurt = false;
+            timeacuum = 0;
         }
-
-        if(temp > currentHealth)
+        if(IsAttacked && IsHurt)
         {
+            //接受傷害
+            currentHealth = currentHealth - 30;
+            IsHurt = false;
+            IsAttacked = false;
+            timeacuum = 0;
+        }
+        if (temp > currentHealth)
+        {
+            
             //signal
             bgm.Play();
+            temp = currentHealth;
+        }
+        if(temp < currentHealth)
+        {
             temp = currentHealth;
         }
         //bgm.Pause();

@@ -22,7 +22,7 @@ public class Controller : MonoBehaviour
     public float x;
     public float y;
     private Quaternion rotation;
-
+    Rigidbody rb;
     public bool InventorySwitch;
     public GameObject inventory;
     private int allSlots;
@@ -37,14 +37,14 @@ public class Controller : MonoBehaviour
     }
     // Use this for initialization
     void Start () {
-        speed = 5;
+        speed = 4;
         JumpForce = 300;
         IsJump = false;
         Vector3 force_direction = Vector3.up;
         Automove = false;
         x = 0;
         y = 0;
-
+        rb = GetComponent<Rigidbody>();
         InventorySwitch = true;
         inventory.SetActive(true);
         allSlots = 10;
@@ -184,7 +184,7 @@ public class Controller : MonoBehaviour
         }
         if (Input.GetKeyUp(KeyCode.Space))
         {
-            Rigidbody rb = GetComponent<Rigidbody>();
+            
             Automove = false;
             if (!IsJump)
             {
@@ -265,14 +265,20 @@ public class Controller : MonoBehaviour
     }
     void OnCollisionEnter(Collision c)
     {
+        Rigidbody rb = GetComponent<Rigidbody>();
         Debug.Log(c.transform.name);
         IsJump = false;
         //IsDoubleJump = false;
-
+        if(c.transform.name == "Wolf")
+        {
+            HealthBar.IsAttacked = true;
+            rb.AddForce(500 * GameObject.Find("Wolf").gameObject.transform.forward);
+            //transform.position += 5 * GameObject.Find("Wolf").gameObject.transform.forward;
+        }
         if (c.transform.name == "g1" || c.transform.name == "g2" || c.transform.name == "g3")
         {
             Destroy(c.gameObject);
-            speed += 2.0f;
+            speed += 0.6f;
             JumpForce += 50.0f;
             Debug.Log(speed);
         }
