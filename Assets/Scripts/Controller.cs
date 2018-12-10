@@ -11,6 +11,7 @@ using UnityEngine.UI;
 
 public class Controller : MonoBehaviour
 {
+    static public Vector3 nowPos;
     public float speed;
     public float JumpForce;
     bool IsJump = true;
@@ -37,7 +38,7 @@ public class Controller : MonoBehaviour
     // Use this for initialization
     void Start () {
         speed = 5;
-        JumpForce = 200;
+        JumpForce = 300;
         IsJump = false;
         Vector3 force_direction = Vector3.up;
         Automove = false;
@@ -57,6 +58,7 @@ public class Controller : MonoBehaviour
 	
 	// Update is called once per frame
 	void Update () {
+        nowPos = transform.position;
         // init
         animator.SetFloat("speed", 0f);
 
@@ -180,7 +182,7 @@ public class Controller : MonoBehaviour
             Automove = false;
             animator.SetFloat("speed", speed);
         }
-        if (Input.GetKey(KeyCode.Space))
+        if (Input.GetKeyUp(KeyCode.Space))
         {
             Rigidbody rb = GetComponent<Rigidbody>();
             Automove = false;
