@@ -8,8 +8,10 @@ public class BackMusic : MonoBehaviour {
     // Use this for initialization
     void Start()
     {
-        bgm1 = GameObject.FindGameObjectWithTag("MusicMorning").GetComponent<AudioSource>();
-        bgm2 = GameObject.FindGameObjectWithTag("MusicNight").GetComponent<AudioSource>();
+        //bgm1 = GameObject.FindGameObjectWithTag("MusicMorning").GetComponent<AudioSource>();
+        bgm1 = GameObject.Find("Morning").GetComponent<AudioSource>();
+        bgm2 = GameObject.Find("Night").GetComponent<AudioSource>();
+        //bgm2 = GameObject.FindGameObjectWithTag("MusicNight").GetComponent<AudioSource>();
         //Debug.Log(bgm1);
     }
 
