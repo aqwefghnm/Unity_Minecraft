@@ -9,6 +9,16 @@ public class HealthBar : MonoBehaviour {
     //血量條
     public RectTransform Health_Bar, Hurt;
 
+    private int temp;
+    private AudioSource bgm;
+    void Start()
+    {
+        temp = maxHealth;
+        bgm = GameObject.Find("DeductHP").GetComponent<AudioSource>();
+        bgm.Stop();
+        //bgm.Play();
+    }
+
     void Update()
     {
         //Debug.Log(currentHealth);
@@ -28,6 +38,14 @@ public class HealthBar : MonoBehaviour {
             //接受傷害
             currentHealth = currentHealth - 30;
         }
+
+        if(temp > currentHealth)
+        {
+            //signal
+            bgm.Play();
+            temp = currentHealth;
+        }
+        //bgm.Pause();
         
         //將綠色血條同步到當前血量長度
         Health_Bar.sizeDelta = new Vector2(currentHealth, Health_Bar.sizeDelta.y);
