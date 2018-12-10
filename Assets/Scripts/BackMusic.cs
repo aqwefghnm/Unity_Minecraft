@@ -18,7 +18,7 @@ public class BackMusic : MonoBehaviour {
     // Update is called once per frame
     void Update()
     {
-        Debug.Log(Daylight.x);
+        //Debug.Log(Daylight.x);
         if (Daylight.x >= 0 && Daylight.x <= 180)
         {
             bgm1.UnPause();
