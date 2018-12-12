@@ -15,22 +15,19 @@ public class Controller : MonoBehaviour
     public float speed;
     public float JumpForce;
     bool IsJump = true;
-    bool Automove;
-    Vector3 move_direction;
-    Vector3 click_pos;
     Animator animator;
     public float x;
     public float y;
     private Quaternion rotation;
     Rigidbody rb;
-    public bool InventorySwitch;
+    public bool BagSwitch;
     public GameObject inventory;
+    public GameObject Bag;
     private int allSlots;
     private GameObject[] slot;
-    private int[] obj;
+    static public int[] obj;
     private int choose;
     public Transform[] material;
-
     void Awake()
     {
         animator = GetComponent<Animator>();
@@ -41,19 +38,15 @@ public class Controller : MonoBehaviour
         JumpForce = 300;
         IsJump = false;
         Vector3 force_direction = Vector3.up;
-        Automove = false;
         x = 0;
         y = 0;
         rb = GetComponent<Rigidbody>();
-        InventorySwitch = true;
+        BagSwitch = false;
+        Bag.SetActive(false);
         inventory.SetActive(true);
-        allSlots = 10;
+        allSlots = 9;
         obj = new int[allSlots];
-        choose = 7;
-        //for (int i = 0; i < allSlots; ++i)
-        //{
-        //    slot[i] = inventory.transform.GetChild(i).gameObject;
-        //}
+        choose = 8;
     }
 	
 	// Update is called once per frame
@@ -73,15 +66,15 @@ public class Controller : MonoBehaviour
 
         if (Input.GetKeyUp(KeyCode.E))
         {
-            if (InventorySwitch == false)
+            if (BagSwitch == false)
             {
-                InventorySwitch = true;
-                inventory.SetActive(true);
+                BagSwitch = true;
+                Bag.SetActive(true);
             }
             else
             {
-                InventorySwitch = false;
-                inventory.SetActive(false);
+                BagSwitch = false;
+                Bag.SetActive(false);
             }
 
         }
@@ -89,24 +82,13 @@ public class Controller : MonoBehaviour
         {
             SceneManager.LoadScene(0);
         }
-        if(Automove)
-        {
-            if(Vector3.Distance(transform.position, click_pos) <= 1)
-            {    
-                Automove = false;
-                return;
-            }
-            animator.SetFloat("speed", speed);
-            transform.position += Time.deltaTime * move_direction.normalized * speed;
-        }
         if (Input.GetMouseButton(0)){
-            Automove = false;
             Ray ray = Camera.main.ScreenPointToRay(Input.mousePosition);
             RaycastHit rch;
             if (Physics.Raycast(ray, out rch))
             {
                 int index;
-                if(choose == 7)
+                if(choose == 8)
                 {
                     if (rch.collider.name == "dirt(Clone)")
                         index = 0;
@@ -127,18 +109,10 @@ public class Controller : MonoBehaviour
                     ++obj[index];
                     Destroy(rch.collider.gameObject);
                     inventory.transform.GetChild(index).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text = obj[index].ToString();
+                    Bag.transform.GetChild(index).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text = obj[index].ToString();
 
                 }
-                else
-                {
-                    Transform powerup = Instantiate(material[choose]);
-                    powerup.position = rch.point + new Vector3(0, 2, 0);
-                    --obj[choose];
-                    inventory.transform.GetChild(choose).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text = obj[choose].ToString();
-                    inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/white");
-                    choose = 7;
-                    inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/red");
-                }
+                
             }
         }
         if (Input.GetMouseButton(1))
@@ -147,45 +121,42 @@ public class Controller : MonoBehaviour
             RaycastHit rch;
             if (Physics.Raycast(ray, out rch))
             {
-                if (rch.collider.name == "floor" && !Automove)
+                if(choose != 8)
                 {
-                    //Debug.Log(rch.point);
-                    Automove = true;
-                    move_direction = rch.point - transform.position;
-                    Debug.Log(move_direction);
-                    click_pos = rch.point;
-                }     
+                    Debug.Log(choose);
+                    Transform powerup = Instantiate(material[choose]);
+                    powerup.position = rch.point + new Vector3(0, 5, 0);
+                    --obj[choose];
+                    inventory.transform.GetChild(choose).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text = obj[choose].ToString();
+                    inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/white");
+                    choose = 8;
+                    inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/red");
+                }
             }
         }
 
         if (Input.GetKey(KeyCode.W))
         {
             transform.position += Time.deltaTime * speed * transform.forward;
-            Automove = false;
             animator.SetFloat("speed", speed);
         }
         if (Input.GetKey(KeyCode.S))
         {
             transform.position += Time.deltaTime * speed * transform.forward * (-1);
-            Automove = false;
             animator.SetFloat("speed", speed);
         }
         if (Input.GetKey(KeyCode.A))
         {
             transform.position += Quaternion.Euler(0, -90, 0) * transform.forward * Time.deltaTime * speed ;
-            Automove = false;
             animator.SetFloat("speed", speed);
         }
         if (Input.GetKey(KeyCode.D))
         {
             transform.position += Quaternion.Euler(0, 90, 0) * transform.forward * Time.deltaTime * speed;
-            Automove = false;
             animator.SetFloat("speed", speed);
         }
         if (Input.GetKeyUp(KeyCode.Space))
         {
-            
-            Automove = false;
             if (!IsJump)
             {
                 rb.AddForce(JumpForce * Vector3.up);
@@ -255,8 +226,17 @@ public class Controller : MonoBehaviour
             choose = 6;
             inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/red");
         }
-        if (Input.GetKey(KeyCode.Alpha8))
+        if (Input.GetKey(KeyCode.Q))
         {
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/white");
+            choose = 8;
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/red");
+        }
+        if (Input.GetKey(KeyCode.Z))
+        {
+            int num = int.Parse(inventory.transform.GetChild(7).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text);
+            if (num <= 0)
+                return;
             inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/white");
             choose = 7;
             inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/red");
