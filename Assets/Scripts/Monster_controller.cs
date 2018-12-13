@@ -17,7 +17,6 @@ public class Monster_controller : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-        
         disPos = Controller.nowPos;
         transform.LookAt(disPos);
         move();
@@ -26,5 +25,7 @@ public class Monster_controller : MonoBehaviour {
     void move()
     {
         transform.position += transform.forward * Time.deltaTime * speed;
+        if (transform.position.y <= 0)
+            transform.position = new Vector3(transform.position.x, 5, transform.position.z);
     }
 }

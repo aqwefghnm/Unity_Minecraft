@@ -29,6 +29,7 @@ public class Controller : MonoBehaviour
     private int choose;
     public Transform[] material;
     public float power;
+    private bool gold_finger1, gold_finger2, gold_finger3;
     void Awake()
     {
         animator = GetComponent<Animator>();
@@ -49,6 +50,9 @@ public class Controller : MonoBehaviour
         obj = new int[allSlots];
         choose = 8;
         power = 200.0f;
+        gold_finger1 = false;
+        gold_finger2 = false;
+        gold_finger3 = false;
     }
 	
 	// Update is called once per frame
@@ -263,15 +267,44 @@ public class Controller : MonoBehaviour
         }
         if (Input.GetKeyUp(KeyCode.T))
         {
-            speed = 20;
+            if (!gold_finger1)
+            {
+                speed += 20;
+                gold_finger1 = true;
+            }
+            else
+            {
+                speed -= 20;
+                gold_finger1 = false;
+            }
+                
         }
         if (Input.GetKeyUp(KeyCode.Y))
         {
-            JumpForce = 600;
+            if (!gold_finger2)
+            {
+                JumpForce += 600;
+                gold_finger2 = true;
+            }
+            else
+            {
+                JumpForce -= 600;
+                gold_finger2 = false;
+            }
         }
         if (Input.GetKeyUp(KeyCode.U))
         {
-            power = 500;
+            if (!gold_finger3)
+            {
+                power += 500;
+                gold_finger3 = true;
+            }
+            else
+            {
+                power -= 500;
+                gold_finger3 = false;
+            }
+            
         }
         if (Input.GetKeyUp(KeyCode.KeypadMinus) && Daylight.speed > 0.015f)
         {
