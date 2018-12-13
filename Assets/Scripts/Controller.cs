@@ -28,6 +28,7 @@ public class Controller : MonoBehaviour
     static public int[] obj;
     private int choose;
     public Transform[] material;
+    public float power;
     void Awake()
     {
         animator = GetComponent<Animator>();
@@ -44,14 +45,17 @@ public class Controller : MonoBehaviour
         BagSwitch = false;
         Bag.SetActive(false);
         inventory.SetActive(true);
-        allSlots = 9;
+        allSlots = 10;
         obj = new int[allSlots];
         choose = 8;
+        power = 200.0f;
     }
 	
 	// Update is called once per frame
 	void Update () {
         nowPos = transform.position;
+        if(nowPos.y <= -20)
+            SceneManager.LoadScene(3);
         // init
         animator.SetFloat("speed", 0f);
 
@@ -64,7 +68,7 @@ public class Controller : MonoBehaviour
         rotation = Quaternion.Euler(y, x, 0);
         transform.rotation = rotation;
 
-        if (Input.GetKeyUp(KeyCode.E))
+        if (Input.GetKeyUp(KeyCode.Tab))
         {
             if (BagSwitch == false)
             {
@@ -110,8 +114,17 @@ public class Controller : MonoBehaviour
                     Destroy(rch.collider.gameObject);
                     inventory.transform.GetChild(index).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text = obj[index].ToString();
                     Bag.transform.GetChild(index).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text = obj[index].ToString();
-
+                    return;
                 }
+                if(choose == 9)
+                {
+                    if(rch.collider.name == "Wolf")
+                    {
+                        Debug.Log("Attack");
+                        rch.collider.gameObject.GetComponent<Rigidbody>().AddForce(power * transform.forward);
+                    }
+                }
+
                 
             }
         }
@@ -121,13 +134,14 @@ public class Controller : MonoBehaviour
             RaycastHit rch;
             if (Physics.Raycast(ray, out rch))
             {
-                if(choose != 8)
+                if(choose == 0 || choose == 1 || choose == 2 || choose == 3 || choose == 4 || choose == 5 || choose == 6 || choose == 7)
                 {
                     Debug.Log(choose);
                     Transform powerup = Instantiate(material[choose]);
                     powerup.position = rch.point + new Vector3(0, 5, 0);
                     --obj[choose];
                     inventory.transform.GetChild(choose).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text = obj[choose].ToString();
+                    Bag.transform.GetChild(choose).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text = obj[choose].ToString();
                     inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/white");
                     choose = 8;
                     inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/red");
@@ -232,7 +246,13 @@ public class Controller : MonoBehaviour
             choose = 8;
             inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/red");
         }
-        if (Input.GetKey(KeyCode.Z))
+        if (Input.GetKey(KeyCode.E))
+        {
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/white");
+            choose = 9;
+            inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/red");
+        }
+        if (Input.GetKey (KeyCode.Z))
         {
             int num = int.Parse(inventory.transform.GetChild(7).gameObject.transform.GetChild(1).gameObject.GetComponent<Text>().text);
             if (num <= 0)
@@ -241,7 +261,18 @@ public class Controller : MonoBehaviour
             choose = 7;
             inventory.transform.GetChild(choose).gameObject.GetComponent<Image>().sprite = Resources.Load<Sprite>("Image/red");
         }
-
+        if (Input.GetKeyUp(KeyCode.T))
+        {
+            speed = 20;
+        }
+        if (Input.GetKeyUp(KeyCode.Y))
+        {
+            JumpForce = 600;
+        }
+        if (Input.GetKeyUp(KeyCode.U))
+        {
+            power = 500;
+        }
     }
     void OnCollisionEnter(Collision c)
     {
@@ -255,11 +286,12 @@ public class Controller : MonoBehaviour
             rb.AddForce(500 * GameObject.Find("Wolf").gameObject.transform.forward);
             //transform.position += 5 * GameObject.Find("Wolf").gameObject.transform.forward;
         }
-        if (c.transform.name == "g1" || c.transform.name == "g2" || c.transform.name == "g3")
+        if (c.transform.name == "g1" || c.transform.name == "g2" || c.transform.name == "g3" || c.transform.name == "g4" || c.transform.name == "g5" || c.transform.name == "g6")
         {
             Destroy(c.gameObject);
             speed += 0.6f;
             JumpForce += 50.0f;
+            power += 30.0f;
             Debug.Log(speed);
         }
     }
