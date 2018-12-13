@@ -34,8 +34,17 @@ public class HealthBar : MonoBehaviour {
 
     void Update()
     {
+        if (Input.GetKeyUp(KeyCode.K))
+        {
+            if (Invincible)
+                Invincible = false;
+            else
+                Invincible = true;
+            Debug.Log(Invincible);
+        }
         if (Invincible == true)
             return;
+
         //Debug.Log(currentHealth);
         //呈現傷害量
         if (Hurt.sizeDelta.x > Health_Bar.sizeDelta.x)
@@ -71,10 +80,7 @@ public class HealthBar : MonoBehaviour {
             timeacuum = 0;
             Hurt.sizeDelta = new Vector2(maxHealth, Health_Bar.sizeDelta.y);
         }
-        if (Input.GetKeyUp(KeyCode.J))
-        {
-            Invincible = true;
-        }
+        
         if (IsAttacked && IsHurt)
         {
             //接受傷害

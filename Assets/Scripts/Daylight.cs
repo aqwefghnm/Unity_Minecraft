@@ -36,5 +36,5 @@ public class Daylight : MonoBehaviour {
     //static public float x, y, z;
     private GameObject wolf;
     static public float x;
-    public float speed = 1f;
+    static public float speed = 0.1f;
 }

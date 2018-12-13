@@ -273,6 +273,16 @@ public class Controller : MonoBehaviour
         {
             power = 500;
         }
+        if (Input.GetKeyUp(KeyCode.KeypadMinus) && Daylight.speed > 0.015f)
+        {
+            Daylight.speed -= 0.01f;
+            Debug.Log(Daylight.speed);
+        }
+        if (Input.GetKeyUp(KeyCode.KeypadPlus))
+        {
+            Daylight.speed += 0.01f;
+            Debug.Log(Daylight.speed);
+        }
     }
     void OnCollisionEnter(Collision c)
     {
